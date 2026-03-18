@@ -1,0 +1,5 @@
+i want to build a project with raspberry where i launch a mini server automatically that will be able to do a get, post and has a log system.
+
+I want to on turn on to git clone my repo and run a script that will activate the server.
+
+i want to have access to the server outside my network
