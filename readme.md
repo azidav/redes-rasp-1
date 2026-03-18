@@ -9,3 +9,11 @@ Merdas:
 
 Make it executable:
 chmod +x launch_server.sh
+
+
+
+-- grok--
+To remove this page:
+Set and send an ngrok-skip-browser-warning request header with any value.
+Or, set and send a custom/non-standard browser User-Agent request header.
+Or, please upgrade to any paid ngrok account.
