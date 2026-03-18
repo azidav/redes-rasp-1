@@ -25,15 +25,15 @@ else
 fi
 
 
-# 4. Launch the server
-# --break-system-packages allows global Flask to run on newer Pi OS
+# 4. Launch the server in the BACKGROUND
 echo "Starting Flask Server..."
-python3 -u app.py >> /home/btk/server_output.log 2>&1
+# The '&' at the end is the magic part—it lets the script continue to step 5
+python3 -u app.py >> /home/btk/server_output.log 2>&1 &
 
-
-# Wait 5 seconds to make sure Flask is up before ngrok tries to connect
+# 5. Wait for Flask to initialize
+echo "Waiting 5 seconds for Flask to warm up..."
 sleep 5
 
-# 5. Launch ngrok (Keep this in the foreground so the script stays active)
+# 6. Launch ngrok (Keep this in the foreground)
 echo "Starting ngrok tunnel..."
 ngrok http --domain=sniffish-plasmodial-gabriel.ngrok-free.dev 5000
