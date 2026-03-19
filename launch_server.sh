@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 5
 
 # 1. Infinite loop to wait for internet
 echo "Waiting for internet..."
