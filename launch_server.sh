@@ -1,11 +1,12 @@
 #!/bin/bash
-sleep 5
 
 # 1. Infinite loop to wait for internet
 echo "Waiting for internet..."
 while ! ping -c 1 -W 1 8.8.8.8 > /dev/null; do
     sleep 5
 done
+
+sleep 10
 
 # 2. Define your repo details
 REPO_URL="https://github.com/azidav/redes-rasp-1.git"
