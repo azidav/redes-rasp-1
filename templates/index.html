@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do Raspberry</title>
+</head>
+<body>
+
+<h1>📝 To-Do List</h1>
+
+<input id="tarefaInput" placeholder="Nova tarefa">
+<button onclick="adicionar()">Adicionar</button>
+
+<ul id="lista"></ul>
+
+<script>
+async function carregar() {
+    const res = await fetch("/api/tarefas");
+    const tarefas = await res.json();
+
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    tarefas.forEach(t => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            ${t.texto} (${t.criado_em})
+            ${t.concluida ? "✅" : `<button onclick="concluir(${t.id})">Concluir</button>`}
+        `;
+
+        lista.appendChild(li);
+    });
+}
+
+async function adicionar() {
+    const texto = document.getElementById("tarefaInput").value;
+
+    await fetch("/api/tarefas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ texto })
+    });
+
+    carregar();
+}
+
+async function concluir(id) {
+    await fetch(`/api/tarefas/${id}/concluir`, {
+        method: "PUT"
+    });
+
+    carregar();
+}
+
+carregar();
+</script>
+
+</body>
+</html>
