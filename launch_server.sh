@@ -38,5 +38,5 @@ sleep 5
 
 # 6. Launch ngrok (Keep this in the foreground)
 echo "Starting ngrok tunnel..."
-ngrok config add-authtoken 3B8Up7sSRkgVXt8GXHiuSPrJdJR_5GyFY72y7gkW6Gm2geBfU
-ngrok http --domain=sniffish-plasmodial-gabriel.ngrok-free.dev 5000 > /home/btk/ngrok_debug.log 2>&1
+/usr/local/bin/ngrok config add-authtoken 3B8Up7sSRkgVXt8GXHiuSPrJdJR_5GyFY72y7gkW6Gm2geBfU
+/usr/local/bin/ngrok http --domain=sniffish-plasmodial-gabriel.ngrok-free.dev 5000 > /home/btk/ngrok_debug.log 2>&1
