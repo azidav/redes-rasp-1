@@ -1,4 +1,8 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
 import json
 from datetime import datetime
 import os
@@ -11,6 +15,7 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}, allow_headers="*")
 
 ARQUIVO_TAREFAS = "tarefas.json"
 
@@ -82,6 +87,11 @@ def apagar_tarefa(id):
     logging.info(f"Tarefa apagada ID: {id}")
 
     return jsonify({"status": "apagada"})
+
+@app.after_request
+def add_headers(response):
+    response.headers["ngrok-skip-browser-warning"] = "true"
+    return response
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
