@@ -37,6 +37,7 @@ echo "Waiting 5 seconds for Flask to warm up..."
 sleep 5
 
 # 6. Launch ngrok (Keep this in the foreground)
-echo "Starting ngrok tunnel..."
+echo "Set ngrok token..."
 /usr/local/bin/ngrok config add-authtoken 3B8Up7sSRkgVXt8GXHiuSPrJdJR_5GyFY72y7gkW6Gm2geBfU
+echo "Starting ngrok tunnel..."
 /usr/local/bin/ngrok http --domain=sniffish-plasmodial-gabriel.ngrok-free.dev 5000 > /home/btk/ngrok_debug.log 2>&1
