@@ -1,59 +1,388 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do Raspberry</title>
+    <style>
+        :root {
+            --bg: #f3f5f7;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --line: #e5e7eb;
+            --primary: #0f766e;
+            --primary-hover: #0b5f59;
+            --danger: #b91c1c;
+            --danger-hover: #991b1b;
+            --done: #047857;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #ffffff 0%, var(--bg) 60%);
+            color: var(--text);
+            padding: 24px 12px;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background: #f8fafc;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .novo-bloco {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #tarefaInput {
+            flex: 1;
+            min-width: 220px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        #tarefaInput:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-sec {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-sec:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+        }
+
+        .conteudo {
+            padding: 6px 20px 20px;
+        }
+
+        .status {
+            margin: 10px 0 6px;
+            min-height: 20px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .status.erro {
+            color: #b91c1c;
+        }
+
+        .status.ok {
+            color: var(--done);
+        }
+
+        .lista {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .item {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+        .item.concluida {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
+        .item-info {
+            min-width: 0;
+        }
+
+        .item-texto {
+            margin: 0;
+            font-size: 1rem;
+            word-break: break-word;
+        }
+
+        .item.concluida .item-texto {
+            text-decoration: line-through;
+            color: #4b5563;
+        }
+
+        .item-meta {
+            margin: 4px 0 0;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .item-acoes {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .vazio {
+            margin: 16px 0 4px;
+            padding: 16px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .item-acoes {
+                width: 100%;
+            }
+
+            .item-acoes button {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
 <body>
+    <main class="container">
+        <section class="header">
+            <h1>To-Do Raspberry</h1>
+            <p>Gestor de tarefas simples para criar, concluir e apagar.</p>
+        </section>
 
-<h1>📝 To-Do List</h1>
+        <section class="novo-bloco">
+            <input id="tarefaInput" placeholder="Escreve uma nova tarefa" maxlength="120">
+            <button class="btn-primary" id="btnAdicionar">Adicionar</button>
+        </section>
 
-<input id="tarefaInput" placeholder="Nova tarefa">
-<button onclick="adicionar()">Adicionar</button>
+        <section class="conteudo">
+            <div id="status" class="status"></div>
+            <ul id="lista" class="lista"></ul>
+            <div id="vazio" class="vazio" hidden>Nenhuma tarefa ainda. Adiciona a primeira.</div>
+        </section>
+    </main>
 
-<ul id="lista"></ul>
+    <script>
+        const listaEl = document.getElementById("lista");
+        const vazioEl = document.getElementById("vazio");
+        const statusEl = document.getElementById("status");
+        const inputEl = document.getElementById("tarefaInput");
+        const btnAdicionarEl = document.getElementById("btnAdicionar");
 
-<script>
-async function carregar() {
-    const res = await fetch("/api/tarefas");
-    const tarefas = await res.json();
+        function mostrarStatus(mensagem, tipo = "") {
+            statusEl.textContent = mensagem;
+            statusEl.className = `status ${tipo}`.trim();
+        }
 
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+        function formatarData(iso) {
+            if (!iso) return "";
+            const d = new Date(iso);
+            if (Number.isNaN(d.getTime())) return iso;
+            return d.toLocaleString("pt-PT", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
 
-    tarefas.forEach(t => {
-        const li = document.createElement("li");
+        function criarBotao(texto, classe, onClick) {
+            const btn = document.createElement("button");
+            btn.textContent = texto;
+            btn.className = classe;
+            btn.addEventListener("click", onClick);
+            return btn;
+        }
 
-        li.innerHTML = `
-            ${t.texto} (${t.criado_em})
-            ${t.concluida ? "✅" : `<button onclick="concluir(${t.id})">Concluir</button>`}
-        `;
+        async function carregar() {
+            try {
+                const res = await fetch("/api/tarefas");
+                if (!res.ok) {
+                    throw new Error("Falha ao carregar tarefas");
+                }
 
-        lista.appendChild(li);
-    });
-}
+                const tarefas = await res.json();
+                listaEl.innerHTML = "";
 
-async function adicionar() {
-    const texto = document.getElementById("tarefaInput").value;
+                if (!tarefas.length) {
+                    vazioEl.hidden = false;
+                    return;
+                }
 
-    await fetch("/api/tarefas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texto })
-    });
+                vazioEl.hidden = true;
 
-    carregar();
-}
+                tarefas.forEach((tarefa) => {
+                    const item = document.createElement("li");
+                    item.className = `item ${tarefa.concluida ? "concluida" : ""}`.trim();
 
-async function concluir(id) {
-    await fetch(`/api/tarefas/${id}/concluir`, {
-        method: "PUT"
-    });
+                    const info = document.createElement("div");
+                    info.className = "item-info";
 
-    carregar();
-}
+                    const texto = document.createElement("p");
+                    texto.className = "item-texto";
+                    texto.textContent = tarefa.texto || "(Sem texto)";
 
-carregar();
-</script>
+                    const meta = document.createElement("p");
+                    meta.className = "item-meta";
+                    meta.textContent = `Criada em: ${formatarData(tarefa.criado_em)}`;
 
+                    info.appendChild(texto);
+                    info.appendChild(meta);
+
+                    const acoes = document.createElement("div");
+                    acoes.className = "item-acoes";
+
+                    if (!tarefa.concluida) {
+                        const concluirBtn = criarBotao("Concluir", "btn-sec", () => concluir(tarefa.id));
+                        acoes.appendChild(concluirBtn);
+                    }
+
+                    const apagarBtn = criarBotao("Apagar", "btn-danger", () => apagar(tarefa.id));
+                    acoes.appendChild(apagarBtn);
+
+                    item.appendChild(info);
+                    item.appendChild(acoes);
+                    listaEl.appendChild(item);
+                });
+            } catch (erro) {
+                mostrarStatus(erro.message || "Erro inesperado ao carregar tarefas.", "erro");
+            }
+        }
+
+        async function adicionar() {
+            const texto = inputEl.value.trim();
+            if (!texto) {
+                mostrarStatus("Escreve uma tarefa antes de adicionar.", "erro");
+                inputEl.focus();
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/tarefas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ texto })
+                });
+
+                if (!res.ok) {
+                    throw new Error("Nao foi possivel adicionar a tarefa.");
+                }
+
+                inputEl.value = "";
+                mostrarStatus("Tarefa adicionada com sucesso.", "ok");
+                await carregar();
+            } catch (erro) {
+                mostrarStatus(erro.message || "Erro ao adicionar tarefa.", "erro");
+            }
+        }
+
+        async function concluir(id) {
+            try {
+                const res = await fetch(`/api/tarefas/${id}/concluir`, { method: "PUT" });
+                if (!res.ok) {
+                    throw new Error("Nao foi possivel concluir a tarefa.");
+                }
+
+                mostrarStatus("Tarefa concluida.", "ok");
+                await carregar();
+            } catch (erro) {
+                mostrarStatus(erro.message || "Erro ao concluir tarefa.", "erro");
+            }
+        }
+
+        async function apagar(id) {
+            try {
+                const res = await fetch(`/api/tarefas/${id}`, { method: "DELETE" });
+                if (!res.ok) {
+                    throw new Error("Nao foi possivel apagar a tarefa.");
+                }
+
+                mostrarStatus("Tarefa apagada.", "ok");
+                await carregar();
+            } catch (erro) {
+                mostrarStatus(erro.message || "Erro ao apagar tarefa.", "erro");
+            }
+        }
+
+        btnAdicionarEl.addEventListener("click", adicionar);
+        inputEl.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                adicionar();
+            }
+        });
+
+        carregar();
+    </script>
 </body>
 </html>
