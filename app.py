@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 import os
 import logging
+from time import time
+
 
 logging.basicConfig(
     filename='server.log',
@@ -27,6 +29,9 @@ def guardar_tarefas(tarefas):
     with open(ARQUIVO_TAREFAS, "w") as f:
         json.dump(tarefas, f, indent=4)
 
+@app.before_request
+def start_timer():
+    request.start_time = time()
 
 # 🏠 Página principal
 @app.route("/")
@@ -89,6 +94,11 @@ def add_headers(response):
     response.headers["ngrok-skip-browser-warning"] = "true"
     return response
 
+def log_latency(response):
+    if hasattr(request, "start_time"):
+        duration = time() - request.start_time
+        logging.info(f"{request.method} {request.path} - {duration:.4f}s")
+    return response
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
