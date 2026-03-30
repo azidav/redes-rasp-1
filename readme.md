@@ -5,7 +5,7 @@ I want to on turn on to git clone my repo and run a script that will activate th
 i want to have access to the server outside my network
 
 
-Merdas:
+To know:
 
 Make it executable:
 chmod +x launch_server.sh
